@@ -16,13 +16,14 @@
       --success-color: #52c41a;
     }
 
-    /* 鎖定全頁放大與雙擊縮放 */
+    /* 鎖定全頁大小與滾動，確保單頁顯示 */
     html, body {
       width: 100%;
       height: 100%;
+      height: 100dvh;
       margin: 0;
       padding: 0;
-      overflow-x: hidden;
+      overflow: hidden; /* 嚴格禁止出現滾動條 */
       touch-action: manipulation;
       -webkit-text-size-adjust: 100%;
       -webkit-touch-callout: none;
@@ -31,6 +32,7 @@
       background-color: var(--bg-color);
       color: var(--text-color);
       font-family: 'Segoe UI', 'Microsoft JhengHei', '微軟正黑體', sans-serif;
+      box-sizing: border-box;
     }
 
     body {
@@ -39,22 +41,22 @@
       align-items: center;
     }
 
-    /* 頂部導航欄 */
+    /* 頂部導航欄 (固定不縮放) */
     header {
       width: 100%;
       background: white;
       box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
-      padding: 12px 24px;
+      padding: 10px 20px;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      position: sticky;
-      top: 0;
       z-index: 10;
+      flex-shrink: 0;
+      box-sizing: border-box;
     }
 
     .header-title {
-      font-size: 26px;
+      font-size: 24px;
       font-weight: bold;
       color: #2c3e50;
       display: flex;
@@ -66,8 +68,8 @@
       background: #f0f2f5;
       border: 2px solid #d9d9d9;
       border-radius: 20px;
-      padding: 10px 18px;
-      font-size: 18px;
+      padding: 8px 16px;
+      font-size: 16px;
       font-weight: bold;
       cursor: pointer;
       transition: all 0.2s;
@@ -82,14 +84,28 @@
       border-color: var(--primary-color);
     }
 
-    .container {
+    /* 主區域容器 */
+    #main-wrapper {
       width: 100%;
-      max-width: 960px;
-      padding: 20px;
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      overflow: hidden;
+      padding: 10px;
+      box-sizing: border-box;
+      position: relative;
+    }
+
+    /* 可縮放的內容主體 */
+    #scalable-content {
+      width: 100%;
+      max-width: 900px;
       display: flex;
       flex-direction: column;
       align-items: center;
-      flex: 1;
+      transform-origin: top center;
+      transition: transform 0.15s ease-out;
     }
 
     /* 封面頁 */
@@ -100,34 +116,34 @@
       justify-content: center;
       width: 100%;
       text-align: center;
-      margin-top: 10px;
+      padding-top: 10px;
     }
 
     .main-title {
-      font-size: 44px;
+      font-size: 40px;
       font-weight: bold;
       color: #1e3799;
-      margin-bottom: 25px;
+      margin-bottom: 20px;
       text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
       background: #e1f5fe;
-      padding: 16px 36px;
+      padding: 14px 32px;
       border-radius: 30px;
       border: 3px dashed #4ac0e0;
     }
 
     .menu-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 20px;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
       width: 100%;
-      max-width: 800px;
+      max-width: 780px;
     }
 
     .menu-card {
       background: white;
       border: 3px solid #e2e8f0;
-      border-radius: 24px;
-      padding: 20px;
+      border-radius: 20px;
+      padding: 16px;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -148,9 +164,9 @@
     }
 
     .card-icons {
-      font-size: 36px;
-      margin-bottom: 8px;
-      min-height: 50px;
+      font-size: 32px;
+      margin-bottom: 6px;
+      min-height: 44px;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -158,15 +174,15 @@
     }
 
     .card-title {
-      font-size: 24px;
+      font-size: 22px;
       font-weight: bold;
       color: #333;
     }
 
     .card-tag {
-      font-size: 14px;
+      font-size: 13px;
       color: #888;
-      margin-top: 4px;
+      margin-top: 2px;
     }
 
     /* 練習頁面 */
@@ -179,16 +195,17 @@
 
     /* 指示文字靠最左 */
     .instructions {
-      font-size: 22px;
+      font-size: 20px;
       font-weight: bold;
       color: #1e293b;
-      margin-bottom: 20px;
+      margin-bottom: 12px;
       width: 100%;
       text-align: left;
       background: #fff;
-      padding: 12px 20px;
-      border-radius: 16px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+      padding: 10px 16px;
+      border-radius: 14px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+      box-sizing: border-box;
     }
 
     /* 水果網格展示區 */
@@ -196,55 +213,56 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 16px;
+      gap: 12px;
       width: 100%;
-      margin-bottom: 15px;
+      margin-bottom: 10px;
     }
 
     .fruit-row {
       display: flex;
       flex-wrap: nowrap;
       justify-content: center;
-      gap: 16px;
+      gap: 12px;
       width: 100%;
     }
 
     .fruit-group {
       background: white;
       border: 3px dashed #cbd5e1;
-      border-radius: 18px;
-      padding: 10px 14px;
+      border-radius: 16px;
+      padding: 8px 12px;
       display: flex;
       align-items: center;
       justify-content: center;
       gap: 4px;
       cursor: pointer;
       transition: all 0.2s ease;
-      min-height: 75px;
+      min-height: 65px;
       touch-action: manipulation;
+      box-sizing: border-box;
     }
 
     /* 已點算組別紅框 */
     .fruit-group.counted {
       border: 4px solid var(--red-highlight) !important;
       background-color: #fff1f0 !important;
-      box-shadow: 0 0 15px rgba(255, 77, 79, 0.35);
+      box-shadow: 0 0 12px rgba(255, 77, 79, 0.35);
     }
 
     .fruit-item {
-      font-size: 36px;
+      font-size: 32px;
       line-height: 1;
     }
 
     /* 藍色橫線 */
     .blue-line {
       width: 100%;
-      height: 6px;
+      height: 5px;
       background-color: var(--blue-line);
       border-radius: 3px;
-      margin: 15px 0 25px 0;
+      margin: 10px 0 16px 0;
       display: none;
-      animation: fadeIn 0.4s ease-in;
+      animation: fadeIn 0.3s ease-in;
     }
 
     /* 答題區域 */
@@ -253,31 +271,31 @@
       flex-direction: column;
       align-items: center;
       width: 100%;
-      animation: fadeIn 0.4s ease-in;
+      animation: fadeIn 0.3s ease-in;
     }
 
     .question-title {
-      font-size: 26px;
+      font-size: 22px;
       font-weight: bold;
       color: #1e293b;
-      margin-bottom: 20px;
+      margin-bottom: 14px;
     }
 
     .options-row {
       display: flex;
       justify-content: center;
-      gap: 30px;
-      margin-bottom: 25px;
+      gap: 24px;
+      margin-bottom: 16px;
       width: 100%;
     }
 
     .option-btn {
-      width: 95px;
-      height: 95px;
+      width: 80px;
+      height: 80px;
       border-radius: 50%;
       border: 4px solid #cbd5e1;
       background: white;
-      font-size: 36px;
+      font-size: 32px;
       font-weight: bold;
       color: #334155;
       cursor: pointer;
@@ -285,36 +303,36 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+      box-shadow: 0 4px 10px rgba(0,0,0,0.08);
       touch-action: manipulation;
     }
 
     /* 選中時紅圈圈出 */
     .option-btn.selected {
-      border: 6px solid var(--red-highlight);
+      border: 5px solid var(--red-highlight);
       color: var(--red-highlight);
       background-color: #fff1f0;
-      box-shadow: 0 0 18px rgba(255, 77, 79, 0.45);
-      transform: scale(1.08);
+      box-shadow: 0 0 16px rgba(255, 77, 79, 0.45);
+      transform: scale(1.06);
     }
 
     .action-bar {
       width: 100%;
       display: flex;
       justify-content: flex-end;
-      margin-top: 5px;
+      margin-top: 2px;
     }
 
     .submit-btn {
       background: var(--success-color);
       color: white;
       border: none;
-      padding: 14px 36px;
-      font-size: 24px;
+      padding: 12px 30px;
+      font-size: 20px;
       font-weight: bold;
-      border-radius: 16px;
+      border-radius: 14px;
       cursor: pointer;
-      box-shadow: 0 4px 14px rgba(82, 196, 26, 0.35);
+      box-shadow: 0 4px 12px rgba(82, 196, 26, 0.35);
       transition: all 0.2s ease;
       touch-action: manipulation;
     }
@@ -343,34 +361,34 @@
 
     .modal-content {
       background: white;
-      border-radius: 28px;
-      padding: 35px;
+      border-radius: 24px;
+      padding: 28px;
       text-align: center;
-      max-width: 480px;
-      width: 90%;
+      max-width: 420px;
+      width: 85%;
       box-shadow: 0 20px 40px rgba(0,0,0,0.25);
-      animation: popIn 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     }
 
     .modal-icon {
-      font-size: 75px;
-      margin-bottom: 15px;
+      font-size: 65px;
+      margin-bottom: 12px;
     }
 
     .modal-title {
-      font-size: 30px;
+      font-size: 26px;
       font-weight: bold;
-      margin-bottom: 20px;
+      margin-bottom: 18px;
     }
 
     .modal-btn {
       background: var(--primary-color);
       color: white;
       border: none;
-      padding: 14px 36px;
-      font-size: 22px;
+      padding: 12px 30px;
+      font-size: 20px;
       font-weight: bold;
-      border-radius: 14px;
+      border-radius: 12px;
       cursor: pointer;
       touch-action: manipulation;
     }
@@ -388,8 +406,8 @@
 </head>
 <body>
 
-  <!-- 頂部導航 -->
-  <header>
+  <!-- 頂部導航 (固定高度，不參與縮放) -->
+  <header id="app-header">
     <div class="header-title" id="page-title">
       🍎 達sir數數大挑戰
     </div>
@@ -403,53 +421,58 @@
     </div>
   </header>
 
-  <div class="container">
-    <!-- 主頁 -->
-    <div id="home-page">
-      <div class="main-title">達sir數數大挑戰</div>
-      <div class="menu-grid">
-        <div class="menu-card" onclick="startPractice(1)">
-          <div class="card-icons">🍎</div>
-          <div class="card-title">1個一數</div>
-        </div>
-        <div class="menu-card" onclick="startPractice(2)">
-          <div class="card-icons">🍎🍎</div>
-          <div class="card-title">2個一數</div>
-        </div>
-        <div class="menu-card" onclick="startPractice(5)">
-          <div class="card-icons">🍎🍎🍎🍎🍎</div>
-          <div class="card-title">5個一數</div>
-        </div>
-        <div class="menu-card" onclick="startPractice(10)">
-          <div class="card-icons" style="font-size: 22px;">🍎🍎🍎🍎🍎🍎🍎🍎🍎🍎</div>
-          <div class="card-title">10個一數</div>
-        </div>
-        <div class="menu-card disabled" onclick="alert('自由數練習稍後推出，敬請期待！')">
-          <div class="card-icons">🔥💪</div>
-          <div class="card-title">自由數</div>
-          <div class="card-tag">（敬請期待）</div>
+  <!-- 可自動縮放的內容容器 -->
+  <div id="main-wrapper">
+    <div id="scalable-content">
+
+      <!-- 主頁 -->
+      <div id="home-page">
+        <div class="main-title">達sir數數大挑戰</div>
+        <div class="menu-grid">
+          <div class="menu-card" onclick="startPractice(1)">
+            <div class="card-icons">🍎</div>
+            <div class="card-title">1個一數</div>
+          </div>
+          <div class="menu-card" onclick="startPractice(2)">
+            <div class="card-icons">🍎🍎</div>
+            <div class="card-title">2個一數</div>
+          </div>
+          <div class="menu-card" onclick="startPractice(5)">
+            <div class="card-icons">🍎🍎🍎🍎🍎</div>
+            <div class="card-title">5個一數</div>
+          </div>
+          <div class="menu-card" onclick="startPractice(10)">
+            <div class="card-icons" style="font-size: 20px;">🍎🍎🍎🍎🍎🍎🍎🍎🍎🍎</div>
+            <div class="card-title">10個一數</div>
+          </div>
+          <div class="menu-card disabled" onclick="alert('自由數練習稍後推出，敬請期待！')">
+            <div class="card-icons">🔥💪</div>
+            <div class="card-title">自由數</div>
+            <div class="card-tag">（敬請期待）</div>
+          </div>
         </div>
       </div>
-    </div>
 
-    <!-- 練習頁面 -->
-    <div id="practice-page">
-      <div class="instructions" id="instructions-text">
-        數一數這裡有多少個水果?
-      </div>
+      <!-- 練習頁面 -->
+      <div id="practice-page">
+        <div class="instructions" id="instructions-text">
+          數一數這裡有多少個水果?
+        </div>
 
-      <div class="fruit-container" id="fruit-container"></div>
-      <div class="blue-line" id="blue-line"></div>
+        <div class="fruit-container" id="fruit-container"></div>
+        <div class="blue-line" id="blue-line"></div>
 
-      <div class="answer-section" id="answer-section">
-        <div class="question-title">請問呢到有幾多個水果？</div>
-        <div class="options-row" id="options-row"></div>
-        <div class="action-bar">
-          <button class="submit-btn" id="submit-btn" disabled onclick="submitAnswer()">
-            ✅ 提交答案
-          </button>
+        <div class="answer-section" id="answer-section">
+          <div class="question-title">請問呢到有幾多個水果？</div>
+          <div class="options-row" id="options-row"></div>
+          <div class="action-bar">
+            <button class="submit-btn" id="submit-btn" disabled onclick="submitAnswer()">
+              ✅ 提交答案
+            </button>
+          </div>
         </div>
       </div>
+
     </div>
   </div>
 
@@ -479,17 +502,43 @@
 
     const fruitList = ['🍎', '🍐', '🍊', '🍌', '🍉', '🍇', '🍓', '🍑', '🫐', '🍒'];
 
+    // --- 全頁智能自動縮放（確保 iPad 9 單頁完整顯示零滾動條）---
+    function autoScale() {
+      const wrapper = document.getElementById('main-wrapper');
+      const content = document.getElementById('scalable-content');
+      if (!wrapper || !content) return;
+
+      // 先取消 scale 以取得真實計算高度
+      content.style.transform = 'none';
+
+      const availableHeight = wrapper.clientHeight - 10;
+      const availableWidth = wrapper.clientWidth - 10;
+
+      const contentHeight = content.offsetHeight;
+      const contentWidth = content.offsetWidth;
+
+      if (contentHeight <= 0 || contentWidth <= 0) return;
+
+      // 計算縮放比例
+      const scaleY = availableHeight / contentHeight;
+      const scaleX = availableWidth / contentWidth;
+
+      // 只有當內容超出可用的寬高時才進行縮小，上限為 1
+      const scaleFactor = Math.min(scaleX, scaleY, 1);
+
+      content.style.transform = `scale(${scaleFactor})`;
+    }
+
     // 重置數字選項發聲冷卻時間
     function resetOptionAudioTimestamps() {
       optionSpeechTimestamps = {};
     }
 
-    // 通用基礎語音播放（將所有「數」字替換為「嫂」音，確保粵語發出標準 sou2 音）
+    // 通用基礎語音播放（將所有「數」字替換為「嫂」音）
     function playSpeech(text) {
       if ('speechSynthesis' in window) {
         window.speechSynthesis.cancel();
 
-        // 核心修改：將文字中所有「數」字改為「嫂」，以強制廣東話語音讀出正確的「sou2」音
         const spokenText = String(text).replace(/數/g, '嫂');
 
         const utterance = new SpeechSynthesisUtterance(spokenText);
@@ -537,6 +586,7 @@
       document.getElementById('practice-page').style.display = 'none';
       document.getElementById('back-btn').style.display = 'none';
       document.getElementById('page-title').innerText = '🍎 達sir數數大挑戰';
+      setTimeout(autoScale, 50);
     }
 
     function startPractice(step) {
@@ -576,8 +626,9 @@
 
       renderFruitGrid();
 
-      // 題目載入時朗讀語音指示語 (「數」會自動唸成「嫂」音)
       playSpeech(`請用${currentStep}個一數，數一下呢到有幾多個水果啦`);
+
+      setTimeout(autoScale, 50);
     }
 
     function generateDistractors() {
@@ -643,7 +694,6 @@
 
       const currentCount = countedGroups * currentStep;
 
-      // 只有當 isFruitAudioOn 為 true 時，點數水果才會發聲
       if (isFruitAudioOn) {
         playSpeech(currentCount.toString());
       }
@@ -651,7 +701,7 @@
       if (countedGroups === totalGroups) {
         setTimeout(() => {
           showAnswerSection();
-        }, 500);
+        }, 300);
       }
     }
 
@@ -661,6 +711,9 @@
 
       playSpeech('請問呢到有幾多個水果？');
       renderOptions();
+
+      // 展開答題區後自動觸發縮放，確保整個答題區都在畫面內
+      setTimeout(autoScale, 50);
     }
 
     function renderOptions() {
@@ -706,7 +759,6 @@
           closeModal();
           generateQuestion();
         };
-        // 「數啱左喇」朗讀時自動轉為「嫂啱左喇」音
         playSpeech('你好勁啊!數啱左喇!!');
       } else {
         icon.innerText = '💪';
@@ -717,7 +769,6 @@
           closeModal();
           resetCurrentQuestion();
         };
-        // 「數錯左...再數過啦」朗讀時自動轉為「嫂錯左...再嫂過啦」音
         playSpeech('數錯左!!唔緊要，再數過啦!');
       }
 
@@ -737,13 +788,21 @@
 
       shuffleOptions();
 
-      // 重新數數時朗讀語音指示語
       playSpeech(`請用${currentStep}個一數，數一下呢到有幾多個水果啦`);
+
+      setTimeout(autoScale, 50);
     }
 
     function closeModal() {
       document.getElementById('feedback-modal').style.display = 'none';
     }
+
+    // --- 監聽螢幕旋轉與 Resize 進行動態縮放 ---
+    window.addEventListener('resize', autoScale);
+    window.addEventListener('orientationchange', () => {
+      setTimeout(autoScale, 150);
+    });
+    window.addEventListener('load', autoScale);
 
     // --- iPad 9 防放大手勢 ---
     document.addEventListener('gesturestart', function (e) {
