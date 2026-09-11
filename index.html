@@ -177,14 +177,14 @@
       align-items: center;
     }
 
-    /* 指示文字移至最左 */
+    /* 指示文字靠最左 */
     .instructions {
       font-size: 22px;
       font-weight: bold;
       color: #1e293b;
       margin-bottom: 20px;
       width: 100%;
-      text-align: left; /* 靠最左 */
+      text-align: left;
       background: #fff;
       padding: 12px 20px;
       border-radius: 16px;
@@ -434,7 +434,6 @@
 
     <!-- 練習頁面 -->
     <div id="practice-page">
-      <!-- 靠最左的指示文字 -->
       <div class="instructions" id="instructions-text">
         數一數這裡有多少個水果?
       </div>
@@ -485,11 +484,15 @@
       optionSpeechTimestamps = {};
     }
 
-    // 通用基礎語音播放（不受點數靜音模式影響，一律正常發聲）
+    // 通用基礎語音播放（將所有「數」字替換為「嫂」音，確保粵語發出標準 sou2 音）
     function playSpeech(text) {
       if ('speechSynthesis' in window) {
         window.speechSynthesis.cancel();
-        const utterance = new SpeechSynthesisUtterance(text);
+
+        // 核心修改：將文字中所有「數」字改為「嫂」，以強制廣東話語音讀出正確的「sou2」音
+        const spokenText = String(text).replace(/數/g, '嫂');
+
+        const utterance = new SpeechSynthesisUtterance(spokenText);
         utterance.lang = 'zh-HK';
         utterance.rate = 0.85;
 
@@ -503,7 +506,7 @@
       }
     }
 
-    // 答案選項 10 秒限制發聲（不受靜音模式影響）
+    // 答案選項 10 秒限制發聲
     function speakAnswerOption(numberValue) {
       const now = Date.now();
       const lastTime = optionSpeechTimestamps[numberValue] || 0;
@@ -516,7 +519,7 @@
       playSpeech(numberValue.toString());
     }
 
-    // 切換點數發聲/靜音模式（只影響點數水果時的發聲）
+    // 切換點數發聲/靜音模式
     function toggleAudio() {
       isFruitAudioOn = !isFruitAudioOn;
       const btn = document.getElementById('audio-btn');
@@ -573,7 +576,7 @@
 
       renderFruitGrid();
 
-      // 題目載入時朗讀語音指示語
+      // 題目載入時朗讀語音指示語 (「數」會自動唸成「嫂」音)
       playSpeech(`請用${currentStep}個一數，數一下呢到有幾多個水果啦`);
     }
 
@@ -703,6 +706,7 @@
           closeModal();
           generateQuestion();
         };
+        // 「數啱左喇」朗讀時自動轉為「嫂啱左喇」音
         playSpeech('你好勁啊!數啱左喇!!');
       } else {
         icon.innerText = '💪';
@@ -713,6 +717,7 @@
           closeModal();
           resetCurrentQuestion();
         };
+        // 「數錯左...再數過啦」朗讀時自動轉為「嫂錯左...再嫂過啦」音
         playSpeech('數錯左!!唔緊要，再數過啦!');
       }
 
@@ -740,7 +745,7 @@
       document.getElementById('feedback-modal').style.display = 'none';
     }
 
-    // --- iPad 9 防放大防護手勢 ---
+    // --- iPad 9 防放大手勢 ---
     document.addEventListener('gesturestart', function (e) {
       e.preventDefault();
     });
