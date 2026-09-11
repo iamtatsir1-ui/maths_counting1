@@ -1,0 +1,772 @@
+<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+  <meta charset="UTF-8">
+  <!-- 針對 iPad 9 及 iOS Safari 嚴格禁止使用者放大縮放版面 -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, shrink-to-fit=no, viewport-fit=cover">
+  <title>達sir數數大挑戰</title>
+  <style>
+    :root {
+      --primary-color: #4ac0e0;
+      --secondary-color: #ff9f43;
+      --bg-color: #f7f9fc;
+      --text-color: #2c3e50;
+      --red-highlight: #ff4d4f;
+      --blue-line: #1890ff;
+      --success-color: #52c41a;
+    }
+
+    /* 鎖定全頁放大與雙擊縮放 */
+    html, body {
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      padding: 0;
+      overflow-x: hidden;
+      touch-action: manipulation;
+      -webkit-text-size-adjust: 100%;
+      -webkit-touch-callout: none;
+      -webkit-user-select: none;
+      user-select: none;
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      font-family: 'Segoe UI', 'Microsoft JhengHei', '微軟正黑體', sans-serif;
+    }
+
+    body {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    /* 頂部導航欄 */
+    header {
+      width: 100%;
+      background: white;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+      padding: 12px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    .header-title {
+      font-size: 26px;
+      font-weight: bold;
+      color: #2c3e50;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .header-btn {
+      background: #f0f2f5;
+      border: 2px solid #d9d9d9;
+      border-radius: 20px;
+      padding: 10px 18px;
+      font-size: 18px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      touch-action: manipulation;
+    }
+
+    .header-btn:hover {
+      background: #e6f7ff;
+      border-color: var(--primary-color);
+    }
+
+    .container {
+      width: 100%;
+      max-width: 960px;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      flex: 1;
+    }
+
+    /* 封面頁 */
+    #home-page {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      text-align: center;
+      margin-top: 10px;
+    }
+
+    .main-title {
+      font-size: 44px;
+      font-weight: bold;
+      color: #1e3799;
+      margin-bottom: 25px;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+      background: #e1f5fe;
+      padding: 16px 36px;
+      border-radius: 30px;
+      border: 3px dashed #4ac0e0;
+    }
+
+    .menu-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 20px;
+      width: 100%;
+      max-width: 800px;
+    }
+
+    .menu-card {
+      background: white;
+      border: 3px solid #e2e8f0;
+      border-radius: 24px;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+      touch-action: manipulation;
+    }
+
+    .menu-card:active {
+      transform: scale(0.96);
+    }
+
+    .menu-card.disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      background: #f5f5f5;
+    }
+
+    .card-icons {
+      font-size: 36px;
+      margin-bottom: 8px;
+      min-height: 50px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .card-title {
+      font-size: 24px;
+      font-weight: bold;
+      color: #333;
+    }
+
+    .card-tag {
+      font-size: 14px;
+      color: #888;
+      margin-top: 4px;
+    }
+
+    /* 練習頁面 */
+    #practice-page {
+      display: none;
+      width: 100%;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    /* 指示文字移至最左 */
+    .instructions {
+      font-size: 22px;
+      font-weight: bold;
+      color: #1e293b;
+      margin-bottom: 20px;
+      width: 100%;
+      text-align: left; /* 靠最左 */
+      background: #fff;
+      padding: 12px 20px;
+      border-radius: 16px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+
+    /* 水果網格展示區 */
+    .fruit-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 16px;
+      width: 100%;
+      margin-bottom: 15px;
+    }
+
+    .fruit-row {
+      display: flex;
+      flex-wrap: nowrap;
+      justify-content: center;
+      gap: 16px;
+      width: 100%;
+    }
+
+    .fruit-group {
+      background: white;
+      border: 3px dashed #cbd5e1;
+      border-radius: 18px;
+      padding: 10px 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      min-height: 75px;
+      touch-action: manipulation;
+    }
+
+    /* 已點算組別紅框 */
+    .fruit-group.counted {
+      border: 4px solid var(--red-highlight) !important;
+      background-color: #fff1f0 !important;
+      box-shadow: 0 0 15px rgba(255, 77, 79, 0.35);
+    }
+
+    .fruit-item {
+      font-size: 36px;
+      line-height: 1;
+    }
+
+    /* 藍色橫線 */
+    .blue-line {
+      width: 100%;
+      height: 6px;
+      background-color: var(--blue-line);
+      border-radius: 3px;
+      margin: 15px 0 25px 0;
+      display: none;
+      animation: fadeIn 0.4s ease-in;
+    }
+
+    /* 答題區域 */
+    .answer-section {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      width: 100%;
+      animation: fadeIn 0.4s ease-in;
+    }
+
+    .question-title {
+      font-size: 26px;
+      font-weight: bold;
+      color: #1e293b;
+      margin-bottom: 20px;
+    }
+
+    .options-row {
+      display: flex;
+      justify-content: center;
+      gap: 30px;
+      margin-bottom: 25px;
+      width: 100%;
+    }
+
+    .option-btn {
+      width: 95px;
+      height: 95px;
+      border-radius: 50%;
+      border: 4px solid #cbd5e1;
+      background: white;
+      font-size: 36px;
+      font-weight: bold;
+      color: #334155;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+      touch-action: manipulation;
+    }
+
+    /* 選中時紅圈圈出 */
+    .option-btn.selected {
+      border: 6px solid var(--red-highlight);
+      color: var(--red-highlight);
+      background-color: #fff1f0;
+      box-shadow: 0 0 18px rgba(255, 77, 79, 0.45);
+      transform: scale(1.08);
+    }
+
+    .action-bar {
+      width: 100%;
+      display: flex;
+      justify-content: flex-end;
+      margin-top: 5px;
+    }
+
+    .submit-btn {
+      background: var(--success-color);
+      color: white;
+      border: none;
+      padding: 14px 36px;
+      font-size: 24px;
+      font-weight: bold;
+      border-radius: 16px;
+      cursor: pointer;
+      box-shadow: 0 4px 14px rgba(82, 196, 26, 0.35);
+      transition: all 0.2s ease;
+      touch-action: manipulation;
+    }
+
+    .submit-btn:disabled {
+      background: #ccc;
+      cursor: not-allowed;
+      box-shadow: none;
+      opacity: 0.6;
+    }
+
+    /* 彈出視窗 Modal */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.6);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 100;
+      animation: fadeIn 0.3s;
+    }
+
+    .modal-content {
+      background: white;
+      border-radius: 28px;
+      padding: 35px;
+      text-align: center;
+      max-width: 480px;
+      width: 90%;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.25);
+      animation: popIn 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    .modal-icon {
+      font-size: 75px;
+      margin-bottom: 15px;
+    }
+
+    .modal-title {
+      font-size: 30px;
+      font-weight: bold;
+      margin-bottom: 20px;
+    }
+
+    .modal-btn {
+      background: var(--primary-color);
+      color: white;
+      border: none;
+      padding: 14px 36px;
+      font-size: 22px;
+      font-weight: bold;
+      border-radius: 14px;
+      cursor: pointer;
+      touch-action: manipulation;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    @keyframes popIn {
+      from { transform: scale(0.6); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 頂部導航 -->
+  <header>
+    <div class="header-title" id="page-title">
+      🍎 達sir數數大挑戰
+    </div>
+    <div style="display: flex; gap: 10px;">
+      <button class="header-btn" id="back-btn" style="display: none;" onclick="goHome()">
+        ⬅️ 返回主頁
+      </button>
+      <button class="header-btn" id="audio-btn" onclick="toggleAudio()">
+        🔊 發聲模式
+      </button>
+    </div>
+  </header>
+
+  <div class="container">
+    <!-- 主頁 -->
+    <div id="home-page">
+      <div class="main-title">達sir數數大挑戰</div>
+      <div class="menu-grid">
+        <div class="menu-card" onclick="startPractice(1)">
+          <div class="card-icons">🍎</div>
+          <div class="card-title">1個一數</div>
+        </div>
+        <div class="menu-card" onclick="startPractice(2)">
+          <div class="card-icons">🍎🍎</div>
+          <div class="card-title">2個一數</div>
+        </div>
+        <div class="menu-card" onclick="startPractice(5)">
+          <div class="card-icons">🍎🍎🍎🍎🍎</div>
+          <div class="card-title">5個一數</div>
+        </div>
+        <div class="menu-card" onclick="startPractice(10)">
+          <div class="card-icons" style="font-size: 22px;">🍎🍎🍎🍎🍎🍎🍎🍎🍎🍎</div>
+          <div class="card-title">10個一數</div>
+        </div>
+        <div class="menu-card disabled" onclick="alert('自由數練習稍後推出，敬請期待！')">
+          <div class="card-icons">🔥💪</div>
+          <div class="card-title">自由數</div>
+          <div class="card-tag">（敬請期待）</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 練習頁面 -->
+    <div id="practice-page">
+      <!-- 靠最左的指示文字 -->
+      <div class="instructions" id="instructions-text">
+        數一數這裡有多少個水果?
+      </div>
+
+      <div class="fruit-container" id="fruit-container"></div>
+      <div class="blue-line" id="blue-line"></div>
+
+      <div class="answer-section" id="answer-section">
+        <div class="question-title">請問呢到有幾多個水果？</div>
+        <div class="options-row" id="options-row"></div>
+        <div class="action-bar">
+          <button class="submit-btn" id="submit-btn" disabled onclick="submitAnswer()">
+            ✅ 提交答案
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 反饋彈窗 -->
+  <div class="modal-overlay" id="feedback-modal">
+    <div class="modal-content">
+      <div class="modal-icon" id="modal-icon">🎉</div>
+      <div class="modal-title" id="modal-title">你好勁啊！數啱左喇！！</div>
+      <button class="modal-btn" id="modal-btn" onclick="closeModal()">下一題</button>
+    </div>
+  </div>
+
+  <script>
+    // 專門控制「點數水果時」是否發聲的變量
+    let isFruitAudioOn = true;
+
+    let currentStep = 2;
+    let totalGroups = 0;
+    let countedGroups = 0;
+    let currentFruit = '🍎';
+    let selectedOption = null;
+    let correctAnswer = 0;
+    let currentOptions = [];
+
+    // 紀錄答案選項最後發聲時間的物件
+    let optionSpeechTimestamps = {};
+
+    const fruitList = ['🍎', '🍐', '🍊', '🍌', '🍉', '🍇', '🍓', '🍑', '🫐', '🍒'];
+
+    // 重置數字選項發聲冷卻時間
+    function resetOptionAudioTimestamps() {
+      optionSpeechTimestamps = {};
+    }
+
+    // 通用基礎語音播放（不受點數靜音模式影響，一律正常發聲）
+    function playSpeech(text) {
+      if ('speechSynthesis' in window) {
+        window.speechSynthesis.cancel();
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.lang = 'zh-HK';
+        utterance.rate = 0.85;
+
+        const voices = window.speechSynthesis.getVoices();
+        const cantoneseVoice = voices.find(v => v.lang === 'zh-HK' || v.lang === 'yue-Hant-HK' || v.lang.includes('HK'));
+        if (cantoneseVoice) {
+          utterance.voice = cantoneseVoice;
+        }
+
+        window.speechSynthesis.speak(utterance);
+      }
+    }
+
+    // 答案選項 10 秒限制發聲（不受靜音模式影響）
+    function speakAnswerOption(numberValue) {
+      const now = Date.now();
+      const lastTime = optionSpeechTimestamps[numberValue] || 0;
+
+      if (now - lastTime < 10000) {
+        return;
+      }
+
+      optionSpeechTimestamps[numberValue] = now;
+      playSpeech(numberValue.toString());
+    }
+
+    // 切換點數發聲/靜音模式（只影響點數水果時的發聲）
+    function toggleAudio() {
+      isFruitAudioOn = !isFruitAudioOn;
+      const btn = document.getElementById('audio-btn');
+      if (isFruitAudioOn) {
+        btn.innerHTML = '🔊 發聲模式';
+        btn.style.background = '#f0f2f5';
+      } else {
+        btn.innerHTML = '🔇 靜音模式';
+        btn.style.background = '#ffe58f';
+      }
+    }
+
+    function goHome() {
+      document.getElementById('home-page').style.display = 'flex';
+      document.getElementById('practice-page').style.display = 'none';
+      document.getElementById('back-btn').style.display = 'none';
+      document.getElementById('page-title').innerText = '🍎 達sir數數大挑戰';
+    }
+
+    function startPractice(step) {
+      currentStep = step;
+      document.getElementById('home-page').style.display = 'none';
+      document.getElementById('practice-page').style.display = 'flex';
+      document.getElementById('back-btn').style.display = 'flex';
+      document.getElementById('page-title').innerText = `🍎 ${step}個一數練習`;
+
+      generateQuestion();
+    }
+
+    function generateQuestion() {
+      resetOptionAudioTimestamps();
+
+      currentFruit = fruitList[Math.floor(Math.random() * fruitList.length)];
+      
+      if (currentStep === 10) {
+        totalGroups = Math.floor(Math.random() * 4) + 2;
+      } else if (currentStep === 5) {
+        totalGroups = Math.floor(Math.random() * 5) + 2;
+      } else if (currentStep === 1) {
+        totalGroups = Math.floor(Math.random() * 8) + 2;
+      } else {
+        totalGroups = Math.floor(Math.random() * 7) + 2;
+      }
+
+      correctAnswer = totalGroups * currentStep;
+      countedGroups = 0;
+      selectedOption = null;
+
+      generateDistractors();
+
+      document.getElementById('blue-line').style.display = 'none';
+      document.getElementById('answer-section').style.display = 'none';
+      document.getElementById('submit-btn').disabled = true;
+
+      renderFruitGrid();
+
+      // 題目載入時朗讀語音指示語
+      playSpeech(`請用${currentStep}個一數，數一下呢到有幾多個水果啦`);
+    }
+
+    function generateDistractors() {
+      const wrongCandidates = new Set();
+
+      if (totalGroups !== correctAnswer) wrongCandidates.add(totalGroups);
+      if (correctAnswer - currentStep > 0) wrongCandidates.add(correctAnswer - currentStep);
+      wrongCandidates.add(correctAnswer + currentStep);
+      if (correctAnswer - 1 > 0) wrongCandidates.add(correctAnswer - 1);
+      wrongCandidates.add(correctAnswer + 1);
+
+      const validWrong = Array.from(wrongCandidates).filter(val => val !== correctAnswer && val > 0);
+      validWrong.sort(() => Math.random() - 0.5);
+      const chosenWrong = validWrong.slice(0, 2);
+
+      currentOptions = [correctAnswer, ...chosenWrong];
+      shuffleOptions();
+    }
+
+    function shuffleOptions() {
+      currentOptions.sort(() => Math.random() - 0.5);
+    }
+
+    function renderFruitGrid() {
+      const container = document.getElementById('fruit-container');
+      container.innerHTML = '';
+
+      const groupsPerRow = Math.floor(10 / currentStep);
+
+      let currentRow = document.createElement('div');
+      currentRow.className = 'fruit-row';
+
+      for (let i = 0; i < totalGroups; i++) {
+        if (i > 0 && i % groupsPerRow === 0) {
+          container.appendChild(currentRow);
+          currentRow = document.createElement('div');
+          currentRow.className = 'fruit-row';
+        }
+
+        const groupDiv = document.createElement('div');
+        groupDiv.className = 'fruit-group';
+        groupDiv.dataset.index = i;
+
+        for (let f = 0; f < currentStep; f++) {
+          const fruitSpan = document.createElement('span');
+          fruitSpan.className = 'fruit-item';
+          fruitSpan.innerText = currentFruit;
+          groupDiv.appendChild(fruitSpan);
+        }
+
+        groupDiv.onclick = () => handleGroupClick(i, groupDiv);
+        currentRow.appendChild(groupDiv);
+      }
+
+      container.appendChild(currentRow);
+    }
+
+    function handleGroupClick(index, element) {
+      if (index !== countedGroups) return;
+
+      element.classList.add('counted');
+      countedGroups++;
+
+      const currentCount = countedGroups * currentStep;
+
+      // 只有當 isFruitAudioOn 為 true 時，點數水果才會發聲
+      if (isFruitAudioOn) {
+        playSpeech(currentCount.toString());
+      }
+
+      if (countedGroups === totalGroups) {
+        setTimeout(() => {
+          showAnswerSection();
+        }, 500);
+      }
+    }
+
+    function showAnswerSection() {
+      document.getElementById('blue-line').style.display = 'block';
+      document.getElementById('answer-section').style.display = 'flex';
+
+      playSpeech('請問呢到有幾多個水果？');
+      renderOptions();
+    }
+
+    function renderOptions() {
+      const optionsRow = document.getElementById('options-row');
+      optionsRow.innerHTML = '';
+
+      currentOptions.forEach(val => {
+        const btn = document.createElement('button');
+        btn.className = 'option-btn';
+        if (selectedOption === val) {
+          btn.classList.add('selected');
+        }
+        btn.innerText = val;
+        btn.onclick = () => selectOption(val, btn);
+        optionsRow.appendChild(btn);
+      });
+    }
+
+    function selectOption(value, element) {
+      selectedOption = value;
+
+      document.querySelectorAll('.option-btn').forEach(b => b.classList.remove('selected'));
+      element.classList.add('selected');
+      document.getElementById('submit-btn').disabled = false;
+
+      speakAnswerOption(value);
+    }
+
+    function submitAnswer() {
+      if (selectedOption === null) return;
+
+      const modal = document.getElementById('feedback-modal');
+      const icon = document.getElementById('modal-icon');
+      const title = document.getElementById('modal-title');
+      const btn = document.getElementById('modal-btn');
+
+      if (selectedOption === correctAnswer) {
+        icon.innerText = '🎉';
+        title.innerText = '你好勁啊！數啱左喇！！';
+        title.style.color = '#52c41a';
+        btn.innerText = '下一題';
+        btn.onclick = () => {
+          closeModal();
+          generateQuestion();
+        };
+        playSpeech('你好勁啊!數啱左喇!!');
+      } else {
+        icon.innerText = '💪';
+        title.innerText = '數錯左！！唔緊要，再數過啦！';
+        title.style.color = '#ff4d4f';
+        btn.innerText = '再試一次';
+        btn.onclick = () => {
+          closeModal();
+          resetCurrentQuestion();
+        };
+        playSpeech('數錯左!!唔緊要，再數過啦!');
+      }
+
+      modal.style.display = 'flex';
+    }
+
+    function resetCurrentQuestion() {
+      resetOptionAudioTimestamps();
+
+      countedGroups = 0;
+      selectedOption = null;
+
+      document.querySelectorAll('.fruit-group').forEach(el => el.classList.remove('counted'));
+      document.getElementById('blue-line').style.display = 'none';
+      document.getElementById('answer-section').style.display = 'none';
+      document.getElementById('submit-btn').disabled = true;
+
+      shuffleOptions();
+
+      // 重新數數時朗讀語音指示語
+      playSpeech(`請用${currentStep}個一數，數一下呢到有幾多個水果啦`);
+    }
+
+    function closeModal() {
+      document.getElementById('feedback-modal').style.display = 'none';
+    }
+
+    // --- iPad 9 防放大防護手勢 ---
+    document.addEventListener('gesturestart', function (e) {
+      e.preventDefault();
+    });
+
+    document.addEventListener('gesturechange', function (e) {
+      e.preventDefault();
+    });
+
+    document.addEventListener('gestureend', function (e) {
+      e.preventDefault();
+    });
+
+    let lastTouchEnd = 0;
+    document.addEventListener('touchend', function (event) {
+      const now = (new Date()).getTime();
+      if (now - lastTouchEnd <= 300) {
+        event.preventDefault();
+      }
+      lastTouchEnd = now;
+    }, false);
+
+    if ('speechSynthesis' in window) {
+      window.speechSynthesis.onvoiceschanged = () => {
+        window.speechSynthesis.getVoices();
+      };
+    }
+  </script>
+</body>
+</html>
