@@ -595,10 +595,10 @@ if (isFruitAudioOn) {
 playSpeech(currentCount.toString());
 }
 if (countedGroups === totalGroups) {
-// 數到最後一個後，等待 4 秒才開始說出問題
+// 數到最後一個後，等待 1.5 秒才開始說出問題
 setTimeout(() => {
 showAnswerSection();
-}, 4000);
+}, 1500);
 }
 }
 function showAnswerSection() {
